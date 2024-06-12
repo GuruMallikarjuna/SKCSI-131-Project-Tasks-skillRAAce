@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>skillRAAce Password Strength Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #007BFF;
+            font-size: 24px;
+        }
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .strength {
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .strength-weak {
+            width: 33%;
+            background: red;
+        }
+        .strength-medium {
+            width: 66%;
+            background: orange;
+        }
+        .strength-strong {
+            width: 100%;
+            background: green;
+        }
+        .percentage {
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .tips, .suggestions {
+            text-align: left;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>skillRAAce Password Strength Checker</h1>
+        <input type="password" id="password" placeholder="Enter your password">
+        <div id="strengthBar" class="strength"></div>
+        <div id="percentage" class="percentage"></div>
+        <div id="feedback" class="tips"></div>
+        <div id="suggestions" class="suggestions"></div>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const percentage = document.getElementById('percentage');
+        const feedback = document.getElementById('feedback');
+        const suggestions = document.getElementById('suggestions');
+
+        password.addEventListener('input', function() {
+            const val = password.value;
+            let strength = 0;
+            let suggestionsList = [];
+
+            if (val.length > 7) strength += 1;
+            else suggestionsList.push("Increase the length to at least 8 characters");
+
+            if (val.length > 10) strength += 1;
+            else suggestionsList.push("Increase the length to more than 10 characters");
+
+            if (/[A-Z]/.test(val)) strength += 1;
+            else suggestionsList.push("Add uppercase letters");
+
+            if (/[a-z]/.test(val)) strength += 1;
+            else suggestionsList.push("Add lowercase letters");
+
+            if (/[0-9]/.test(val)) strength += 1;
+            else suggestionsList.push("Add numbers");
+
+            if (/[^A-Za-z0-9]/.test(val)) strength += 1;
+            else suggestionsList.push("Add special characters");
+
+            let strengthPercent = (strength / 6) * 100;
+            percentage.textContent = `Strength: ${strengthPercent}%`;
+
+            switch (strength) {
+                case 1:
+                case 2:
+                    strengthBar.className = 'strength strength-weak';
+                    feedback.innerHTML = '<ul><li>Too short</li><li>Add uppercase letters</li><li>Add numbers</li><li>Add special characters</li></ul>';
+                    break;
+                case 3:
+                case 4:
+                    strengthBar.className = 'strength strength-medium';
+                    feedback.innerHTML = '<ul><li>Could be stronger</li><li>Consider adding more characters</li><li>Include a mix of uppercase, lowercase, numbers, and special characters</li></ul>';
+                    break;
+                case 5:
+                case 6:
+                    strengthBar.className = 'strength strength-strong';
+                    feedback.innerHTML = '<ul><li>Strong password</li><li>Good job!</li></ul>';
+                    break;
+            }
+
+            suggestions.innerHTML = '<strong>Suggestions:</strong><ul>' + suggestionsList.map(s => `<li>${s}</li>`).join('') + '</ul>';
+        });
+    </script>
+</body>
+</html>
